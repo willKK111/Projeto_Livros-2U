@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrinho de Compras</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #999;
+            padding: 10px;
+            text-align: left;
+        }
+
+        img {
+            max-width: 80px;
+        }
+    </style>
+</head>
+<body>
+<h1>Itens no Carrinho</h1>
+
+<div th:if="${mensagem}">
+    <p th:text="${mensagem}" style="color: red;"></p>
+</div>
+
+<div th:if="${#lists.isEmpty(carrinho)}">
+    <p>O carrinho está vazio.</p>
+    <a href="/index">Voltar à lista de livros</a>
+</div>
+
+<div th:unless="${#lists.isEmpty(carrinho)}">
+    <table>
+        <thead>
+        <tr>
+            <th>Imagem</th>
+            <th>Título</th>
+            <th>Autor</th>
+            <th>Ano</th>
+            <th>Gênero</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="livro : ${carrinho}">
+            <td><img th:src="@{/images/{img}(img=${livro.imageUrl})}" alt="Imagem do livro"/></td>
+            <td th:text="${livro.titulo}">Título</td>
+            <td th:text="${livro.autor}">Autor</td>
+            <td th:text="${livro.anoPublicacao}">Ano</td>
+            <td th:text="${livro.genero}">Gênero</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <a href="/finalizarCompra">Finalizar Compra</a>
+</div>
+</body>
+</html>

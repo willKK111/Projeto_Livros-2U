@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Livro</title>
+</head>
+<body>
+<h1>Cadastrar Livro</h1>
+
+<form th:action="@{/salvar}" th:object="${livro}" method="post">
+    <div>
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" th:field="*{titulo}" />
+        <span th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></span>
+    </div>
+
+    <div>
+        <label for="autor">Autor:</label>
+        <input type="text" id="autor" th:field="*{autor}" />
+        <span th:if="${#fields.hasErrors('autor')}" th:errors="*{autor}"></span>
+    </div>
+
+    <div>
+        <label for="anoPublicacao">Ano de Publicação:</label>
+        <input type="number" id="anoPublicacao" th:field="*{anoPublicacao}" />
+        <span th:if="${#fields.hasErrors('anoPublicacao')}" th:errors="*{anoPublicacao}"></span>
+    </div>
+
+    <div>
+        <label for="genero">Gênero:</label>
+        <input type="text" id="genero" th:field="*{genero}" />
+        <span th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}"></span>
+    </div>
+
+    <!-- Campo oculto para imageUrl -->
+    <input type="hidden" th:field="*{imageUrl}" />
+
+    <div>
+        <button type="submit">Salvar</button>
+    </div>
+</form>
+
+<br/>
+<a href="/admin">Voltar para Home Admin</a>
+</body>
+</html>

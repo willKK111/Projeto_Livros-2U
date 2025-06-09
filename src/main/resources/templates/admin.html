@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Administração de Livros</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1>Administração de Livros</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Autor</th>
+        <th>Ano</th>
+        <th>Gênero</th>
+        <th>Imagem</th>
+        <th>Deletado?</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="livro : ${livros}">
+        <td th:text="${livro.id}">1</td>
+        <td th:text="${livro.titulo}">Título</td>
+        <td th:text="${livro.autor}">Autor</td>
+        <td th:text="${livro.anoPublicacao}">2020</td>
+        <td th:text="${livro.genero}">Ficção</td>
+        <td>
+            <img th:src="@{'/images/' + ${livro.imageUrl}}" alt="Capa" width="100" />
+        </td>
+        <td th:text="${livro.isDeleted != null ? 'Sim' : 'Não'}"></td>
+        <td>
+            <a th:href="@{/editar(id=${livro.id})}">Editar</a> |
+            <a th:href="@{/deletar(id=${livro.id})}">Deletar</a> |
+            <a th:href="@{/restaurar(id=${livro.id})}">Restaurar</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br/>
+
+<a href="/cadastro">Cadastrar Novo Livro</a>
+</body>
+</html>

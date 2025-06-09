@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Livros Disponíveis</title>
+</head>
+<body>
+<h1>Catálogo de Livros</h1>
+
+<a th:href="@{/verCarrinho}">Ver Carrinho (Itens: [[${quantidadeCarrinho}]])</a>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Autor</th>
+        <th>Gênero</th>
+        <th>Ano</th>
+        <th>Imagem</th>
+        <th>Ação</th>
+    </tr>
+    <tr th:each="livro : ${livros}">
+        <td th:text="${livro.id}"></td>
+        <td th:text="${livro.titulo}"></td>
+        <td th:text="${livro.autor}"></td>
+        <td th:text="${livro.genero}"></td>
+        <td th:text="${livro.anoPublicacao}"></td>
+        <td>
+            <img th:src="@{/static/{img}(img=${livro.imageUrl})}" alt="Capa" width="100"/>
+        </td>
+        <td>
+            <a th:href="@{/adicionarCarrinho(id=${livro.id})}">Adicionar ao Carrinho</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
