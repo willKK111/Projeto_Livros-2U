@@ -14,9 +14,7 @@ import ufrn.br.projeto_livros2u.repository.LivroRepository;
 
 import ufrn.br.projeto_livros2u.service.LivroService;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class LivroController {
@@ -64,8 +62,22 @@ public class LivroController {
         }
 
         model.addAttribute("carrinho", carrinho);
-        return "carrinho";
+
+        Map<Long, Integer> carrinhoQuantidades = (Map<Long, Integer>) session.getAttribute("carrinhoQuantidades");
+        if (carrinhoQuantidades == null) {
+            carrinhoQuantidades = new HashMap<>();
+        }
+
+        // Preenche com 1 se não estiver definido
+        for (Livro livro : carrinho) {
+            carrinhoQuantidades.putIfAbsent(livro.getId(), 1);
+        }
+
+        model.addAttribute("carrinhoQuantidades", carrinhoQuantidades);
+
+        return "verCarrinho";
     }
+
 
     @GetMapping("/finalizarCompra")
     public String finalizar(HttpSession session) {
@@ -119,6 +131,36 @@ public class LivroController {
         return "redirect:/index";
     }
 
+    @PostMapping("/atualizarQuantidade")
+    public String atualizarQuantidade(@RequestParam Long id,
+                                      @RequestParam int quantidade,
+                                      HttpSession session,
+                                      RedirectAttributes ra) {
+
+        Optional<Livro> optLivro = livroService.buscarPorId(id);
+        if (optLivro.isEmpty()) {
+            ra.addFlashAttribute("mensagem", "Livro não encontrado.");
+            return "redirect:/verCarrinho";
+        }
+
+        Livro livro = optLivro.get();
+
+        if (livro.getEstoque() < quantidade) {
+            ra.addFlashAttribute("mensagem", "Estoque insuficiente para " + livro.getTitulo());
+            return "redirect:/verCarrinho";
+        }
+
+        // Atualiza quantidades
+        Map<Long, Integer> carrinhoQuantidades = (Map<Long, Integer>) session.getAttribute("carrinhoQuantidades");
+        if (carrinhoQuantidades == null) {
+            carrinhoQuantidades = new HashMap<>();
+        }
+        carrinhoQuantidades.put(id, quantidade);
+        session.setAttribute("carrinhoQuantidades", carrinhoQuantidades);
+
+        ra.addFlashAttribute("mensagem", "Quantidade atualizada com sucesso.");
+        return "redirect:/verCarrinho";
+    }
 
 
 }

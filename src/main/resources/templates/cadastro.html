@@ -32,6 +32,18 @@
         <span th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}"></span>
     </div>
 
+    <div>
+        <label for="estoque">Estoque:</label>
+        <input type="number" id="estoque" th:field="*{estoque}" min="0" />
+        <span th:if="${#fields.hasErrors('estoque')}" th:errors="*{estoque}"></span>
+    </div>
+
+    <div>
+        <label for="preco">Preço (R$):</label>
+        <input type="number" step="0.01" id="preco" th:field="*{preco}" min="0.01" />
+        <span th:if="${#fields.hasErrors('preco')}" th:errors="*{preco}"></span>
+    </div>
+
     <!-- Campo oculto para imageUrl -->
     <input type="hidden" th:field="*{imageUrl}" />
 

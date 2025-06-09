@@ -19,6 +19,16 @@
         img {
             max-width: 80px;
         }
+
+        .quantidade-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type=number] {
+            width: 60px;
+        }
     </style>
 </head>
 <body>
@@ -42,15 +52,30 @@
             <th>Autor</th>
             <th>Ano</th>
             <th>Gênero</th>
+            <th>Preço</th>
+            <th>Quantidade</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="livro : ${carrinho}">
+        <tr th:each="livro, stat : ${carrinho}">
             <td><img th:src="@{/images/{img}(img=${livro.imageUrl})}" alt="Imagem do livro"/></td>
             <td th:text="${livro.titulo}">Título</td>
             <td th:text="${livro.autor}">Autor</td>
             <td th:text="${livro.anoPublicacao}">Ano</td>
             <td th:text="${livro.genero}">Gênero</td>
+            <td th:text="'R$ ' + ${#numbers.formatDecimal(livro.preco, 1, 'COMMA', 2, 'POINT')}">Preço</td>
+            <td>
+                <form method="post" th:action="@{/atualizarQuantidade}">
+                    <div class="quantidade-form">
+                        <input type="hidden" name="id" th:value="${livro.id}" />
+                        <input type="number" name="quantidade"
+                               min="1" max="99"
+                               th:value="${carrinhoQuantidades[livro.id] != null ? carrinhoQuantidades[livro.id] : 1}" required />
+
+                        <button type="submit">Atualizar</button>
+                    </div>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -58,5 +83,7 @@
     <br>
     <a href="/finalizarCompra">Finalizar Compra</a>
 </div>
+
+
 </body>
 </html>
