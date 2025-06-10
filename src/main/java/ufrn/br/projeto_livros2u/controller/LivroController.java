@@ -28,56 +28,68 @@ public class LivroController {
 
     @GetMapping("/index")
     public String index(Model model, HttpSession session) {
-        List<Livro> livros = livroRepository.findByIsDeletedNull();
+        List<Livro> livros = livroService.listarNaoDeletados();
         model.addAttribute("livros", livros);
 
-        List<Livro> carrinho = (List<Livro>) session.getAttribute("carrinho");
-        model.addAttribute("qtdCarrinho", carrinho != null ? carrinho.size() : 0);
+        Map<Long, Integer> carrinho = (Map<Long, Integer>) session.getAttribute("carrinho");
+        if (carrinho == null) {
+            carrinho = new HashMap<>();
+        }
+
+        int qtdCarrinho = carrinho.values().stream().mapToInt(Integer::intValue).sum();
+
+        Map<Long, Integer> quantidades = new HashMap<>();
+        carrinho.forEach(quantidades::put);
+
+        model.addAttribute("quantidades", quantidades);
+
+        model.addAttribute("carrinho", carrinho);
+        model.addAttribute("qtdCarrinho", qtdCarrinho);
 
         return "index";
     }
 
-
     @GetMapping("/adicionarCarrinho")
     public String adicionarCarrinho(@RequestParam Long id, HttpSession session) {
-        Livro livro = livroRepository.findById(id).orElseThrow();
-        List<Livro> carrinho = (List<Livro>) session.getAttribute("carrinho");
+        livroRepository.findById(id).orElseThrow();
 
+        Map<Long, Integer> carrinho = (Map<Long, Integer>) session.getAttribute("carrinho");
         if (carrinho == null) {
-            carrinho = new ArrayList<>();
-            session.setAttribute("carrinho", carrinho);
+            carrinho = new HashMap<>();
         }
 
-        carrinho.add(livro);
+        carrinho.put(id, carrinho.getOrDefault(id, 0) + 1);
+        session.setAttribute("carrinho", carrinho);
+
         return "redirect:/index";
     }
 
 
     @GetMapping("/verCarrinho")
     public String verCarrinho(HttpSession session, Model model, RedirectAttributes ra) {
-        List<Livro> carrinho = (List<Livro>) session.getAttribute("carrinho");
+        Map<Long, Integer> carrinho = (Map<Long, Integer>) session.getAttribute("carrinho");
 
         if (carrinho == null || carrinho.isEmpty()) {
             ra.addFlashAttribute("mensagem", "Carrinho vazio!");
             return "redirect:/index";
         }
 
-        model.addAttribute("carrinho", carrinho);
+        List<Livro> livrosCarrinho = livroRepository.findAllById(carrinho.keySet());
 
-        Map<Long, Integer> carrinhoQuantidades = (Map<Long, Integer>) session.getAttribute("carrinhoQuantidades");
-        if (carrinhoQuantidades == null) {
-            carrinhoQuantidades = new HashMap<>();
+        Map<Long, Integer> carrinhoQuantidades = new HashMap<>();
+        for (Livro livro : livrosCarrinho) {
+            carrinhoQuantidades.put(livro.getId(), carrinho.getOrDefault(livro.getId(), 0));
         }
 
-        // Preenche com 1 se não estiver definido
-        for (Livro livro : carrinho) {
-            carrinhoQuantidades.putIfAbsent(livro.getId(), 1);
-        }
-
+        // Adicionar corretamente ao modelo
+        model.addAttribute("livrosCarrinho", livrosCarrinho);
         model.addAttribute("carrinhoQuantidades", carrinhoQuantidades);
+        model.addAttribute("carrinho", carrinho);
 
         return "verCarrinho";
     }
+
+
 
 
     @GetMapping("/finalizarCompra")

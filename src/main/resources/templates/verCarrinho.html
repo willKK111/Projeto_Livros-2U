@@ -54,36 +54,24 @@
             <th>Gênero</th>
             <th>Preço</th>
             <th>Quantidade</th>
+
         </tr>
         </thead>
         <tbody>
-        <tr th:each="livro, stat : ${carrinho}">
-            <td><img th:src="@{/images/{img}(img=${livro.imageUrl})}" alt="Imagem do livro"/></td>
-            <td th:text="${livro.titulo}">Título</td>
-            <td th:text="${livro.autor}">Autor</td>
-            <td th:text="${livro.anoPublicacao}">Ano</td>
-            <td th:text="${livro.genero}">Gênero</td>
-            <td th:text="'R$ ' + ${#numbers.formatDecimal(livro.preco, 1, 'COMMA', 2, 'POINT')}">Preço</td>
-            <td>
-                <form method="post" th:action="@{/atualizarQuantidade}">
-                    <div class="quantidade-form">
-                        <input type="hidden" name="id" th:value="${livro.id}" />
-                        <input type="number" name="quantidade"
-                               min="1" max="99"
-                               th:value="${carrinhoQuantidades[livro.id] != null ? carrinhoQuantidades[livro.id] : 1}" required />
-
-                        <button type="submit">Atualizar</button>
-                    </div>
-                </form>
-            </td>
+        <tr th:each="livro : ${livrosCarrinho}">
+            <td><img th:src="@{${livro.imageUrl}}" alt="Capa" width="100"/></td>
+            <td th:text="${livro.titulo}"></td>
+            <td th:text="${livro.autor}"></td>
+            <td th:text="${livro.anoPublicacao}"></td>
+            <td th:text="${livro.genero}"></td>
+            <td th:text="${#numbers.formatDecimal(livro.preco, 1, 'COMMA', 2, 'POINT')}"></td>
+            <td th:text="${carrinhoQuantidades[livro.id]} ?: 0"></td>
         </tr>
         </tbody>
     </table>
-
     <br>
     <a href="/finalizarCompra">Finalizar Compra</a>
 </div>
-
 
 </body>
 </html>
