@@ -17,6 +17,8 @@
         <th>Ano</th>
         <th>Gênero</th>
         <th>Imagem</th>
+        <th>Estoque</th>
+        <th>Preço</th>
         <th>Deletado?</th>
         <th>Ações</th>
     </tr>
@@ -29,8 +31,10 @@
         <td th:text="${livro.anoPublicacao}">2020</td>
         <td th:text="${livro.genero}">Ficção</td>
         <td>
-            <img th:src="@{'/images/' + ${livro.imageUrl}}" alt="Capa" width="100" />
+            <img th:src="@{'/static/' + ${livro.imageUrl}}" alt="Capa" width="100" />
         </td>
+        <td th:text="${livro.estoque}">10</td>
+        <td th:text="${livro.preco}">99.90</td>
         <td th:text="${livro.isDeleted != null ? 'Sim' : 'Não'}"></td>
         <td>
             <a th:href="@{/editar(id=${livro.id})}">Editar</a> |

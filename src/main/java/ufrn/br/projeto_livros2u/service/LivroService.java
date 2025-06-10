@@ -17,9 +17,9 @@ public class LivroService {
     private LivroRepository livroRepository;
 
     private final String[] imagens = {
-            "/img/livro1.jpg",
-            "/img/livro2.jpg",
-            "/img/livro3.jpg"
+            "/static/livro1.jpg.png",
+            "/static/livro2.jpg.png",
+            "/static/livro3.jpg.png"
     };
 
     public List<Livro> listarNaoDeletados() {

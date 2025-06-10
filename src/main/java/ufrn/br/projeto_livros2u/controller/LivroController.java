@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -106,14 +107,14 @@ public class LivroController {
     public String editar(@RequestParam Long id, Model model) {
         Livro livro = livroRepository.findById(id).orElseThrow();
         model.addAttribute("livro", livro);
-        return "form";
+        return "editar";
     }
 
     @PostMapping("/salvar")
-    public String salvar(@Valid Livro livro, BindingResult result, RedirectAttributes ra) {
+    public String salvar(@Valid @ModelAttribute("livro") Livro livro, BindingResult result, RedirectAttributes ra) {
         if (result.hasErrors()) return "cadastro";
 
-       livroService.salvar(livro);
+        livroService.salvar(livro);
         ra.addFlashAttribute("mensagem", "Livro salvo com sucesso!");
         return "redirect:/admin";
     }
