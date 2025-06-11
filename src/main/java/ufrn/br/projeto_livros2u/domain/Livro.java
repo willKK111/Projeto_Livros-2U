@@ -7,7 +7,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
+@Entity(name="livro")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
